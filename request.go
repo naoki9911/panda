@@ -2,8 +2,10 @@ package panda
 
 import (
 	"bytes"
+	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 )
 
@@ -28,4 +30,21 @@ func (p Handler) get(uri string, query url.Values) (*http.Response, error) {
 	req.Header.Add("User-Agent", userAgent)
 
 	return p.client.Do(req)
+}
+
+func (p Handler) Download(path string, url string) error {
+	resp, err := p.get(url, nil)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = io.Copy(file, resp.Body)
+	return err
 }
