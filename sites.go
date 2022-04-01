@@ -24,3 +24,30 @@ func (p Handler) GetFavoriteSites() (list FavoriteSiteList) {
 
 	return
 }
+
+type Site struct {
+	Id string `json:"id"`
+}
+
+type DirectSiteJsonResult struct {
+	EntityPrefix   string `json:"entityPrefix"`
+	SiteCollection []Site `json:"site_collection"`
+}
+
+// GetAllSites get all the sites which the authenticated user can see.
+func (p Handler) GetAllSites() (list DirectSiteJsonResult) {
+	p.sustainAuth()
+
+	res, err := p.get(BaseURI+"/direct/site.json", nil)
+	if err != nil {
+		return
+	}
+	defer res.Body.Close()
+
+	err = json.NewDecoder(res.Body).Decode(&list)
+	if err != nil {
+		return
+	}
+
+	return
+}
