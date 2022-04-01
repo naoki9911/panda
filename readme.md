@@ -1,3 +1,5 @@
+This repository is forked from [panda](https://github.com/TKMAX777/panda)
+
 # PandA API for Golang
 
 ## 概要
